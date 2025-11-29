@@ -538,7 +538,7 @@
                             <div class="project-form-group">
                                 <label><i class="fas fa-tag"></i> 프로젝트 이름:</label>
                                 <input type="text" id="new-project-name" class="path-input" placeholder="예: git-info, siteplan 등">
-                            </div>
+                        </div>
                             <div class="project-form-group">
                                 <label><i class="fas fa-folder"></i> 프로젝트 디렉토리 경로:</label>
                                 <div class="path-placeholder" style="margin-bottom: 8px;">
@@ -589,13 +589,126 @@
                     </div>
                         </div>
 
+                <!-- 공통: git clone (최초 1회) -->
                 <div class="subsection">
-                    <h3 class="subsection-title"><i class="fas fa-cog"></i> 최초 설정 (한 번만 실행)</h3>
+                    <h3 class="subsection-title"><i class="fas fa-download"></i> 최초 설정 (공통) - 프로젝트 가져오기</h3>
+                    
+                    <!-- 언제 git clone을 해야 하나요? -->
+                    <div class="warning-box" style="margin-bottom: 20px;">
+                        <strong><i class="fas fa-question-circle"></i> 언제 git clone을 해야 하나요?</strong>
+                        <div style="margin-top: 15px;">
+                            <div style="padding: 12px; background: #e8f5e9; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #4caf50;">
+                                <strong style="color: #2e7d32;">✅ git clone이 필요한 경우:</strong>
+                                <ul style="margin-top: 8px; margin-left: 20px; line-height: 1.8;">
+                                    <li>새로운 컴퓨터에서 처음 시작할 때</li>
+                                    <li>프로젝트 폴더가 없는 경우</li>
+                                    <li>회사에서 작업 후 집 컴퓨터에서 처음 시작할 때</li>
+                                    <li>다른 사람의 프로젝트를 처음 가져올 때</li>
+                                </ul>
+                        </div>
+                            <div style="padding: 12px; background: #fff3e0; border-radius: 6px; border-left: 4px solid #ff9800;">
+                                <strong style="color: #f57c00;">❌ git clone이 불필요한 경우:</strong>
+                                <ul style="margin-top: 8px; margin-left: 20px; line-height: 1.8;">
+                                    <li>이미 프로젝트 폴더가 있는 경우</li>
+                                    <li>기존 컴퓨터에서 push만 하면 되는 경우</li>
+                                    <li>이미 git clone을 한 번 실행한 경우</li>
+                                </ul>
+                                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                                    → 이 경우는 아래 <strong>반복 작업</strong> 섹션의 코드를 사용하세요!
+                                </p>
+                        </div>
+                    </div>
+                    </div>
+                    
+                    <!-- git clone 설명 섹션 -->
+                    <div class="info-box" style="margin-bottom: 20px;">
+                        <strong><i class="fas fa-question-circle"></i> git clone이란?</strong>
+                        <p style="margin-top: 10px;">
+                            <code>git clone</code>은 GitHub에 있는 프로젝트를 내 컴퓨터로 처음 가져올 때 사용하는 명령어입니다.
+                            <br><strong>zip 파일 다운로드 없이</strong> 프로젝트 전체를 가져올 수 있습니다.
+                            <br><br><strong>💡 중요:</strong> git clone은 <strong>PUSH와 PULL 모두</strong>에서 최초 1회 필요한 공통 작업입니다!
+                        </p>
+                    </div>
+
+                    <div class="path-input-section" style="margin-bottom: 20px;">
+                        <strong><i class="fas fa-list-ol"></i> git clone 사용 방법 (단계별):</strong>
+                        <ol style="margin-top: 15px; margin-left: 20px; line-height: 2;">
+                            <li><strong>작업용 상위 폴더로 이동</strong>
+                                <br><span style="color: #666; font-size: 0.9em;">예: <code>cd /Users/blogmac/Desktop/CURSOR</code> (Mac) 또는 <code>cd D:\CURSOR</code> (Windows)</span>
+                                <br><span style="color: #666; font-size: 0.85em;">※ 프로젝트 폴더가 아닌, 프로젝트를 저장할 상위 폴더로 이동합니다</span>
+                            </li>
+                            <li><strong>git clone 실행</strong>
+                                <div style="margin-top: 10px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
+                                    <strong style="color: #667eea;">📋 GitHub URL 가져오기:</strong>
+                                    <ol style="margin-top: 8px; margin-left: 20px; line-height: 1.8;">
+                                        <li>GitHub 웹사이트에서 프로젝트 페이지로 이동</li>
+                                        <li>초록색 <strong>"Code"</strong> 버튼 클릭</li>
+                                        <li><strong>HTTPS</strong> 탭 선택 (기본 선택됨)</li>
+                                        <li>URL 옆의 <strong>복사 아이콘</strong> 클릭</li>
+                                    </ol>
+                                    <strong style="color: #667eea; display: block; margin-top: 15px;">💻 터미널에서 입력하기 (순서대로):</strong>
+                                    <div style="margin-top: 8px; padding: 15px; background: #2d2d2d; color: #f8f8f2; border-radius: 5px; font-family: 'Consolas', monospace; font-size: 0.9em; line-height: 1.8;">
+                                        <span style="color: #75715e;"># 1. 상위 폴더로 이동</span><br>
+                                        cd /Users/blogmac/Desktop/CURSOR<br><br>
+                                        <span style="color: #75715e;"># 2. git clone 실행</span><br>
+                                        git clone [복사한 URL 붙여넣기]<br><br>
+                                        <span style="color: #75715e;"># 3. 클론 받은 폴더로 이동</span><br>
+                                        cd [저장소 이름]
+                                    </div>
+                                    <div style="margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+                                        <strong>실제 예시:</strong>
+                                        <div style="margin-top: 8px; padding: 10px; background: #2d2d2d; color: #f8f8f2; border-radius: 5px; font-family: 'Consolas', monospace; font-size: 0.9em; line-height: 1.8;">
+                                            <span style="color: #75715e;"># 1. 상위 폴더로 이동</span><br>
+                                            cd /Users/blogmac/Desktop/CURSOR<br><br>
+                                            <span style="color: #75715e;"># 2. git clone 실행</span><br>
+                                            git clone https://github.com/postpr0727-ship-it/git-info.git<br><br>
+                                            <span style="color: #75715e;"># 3. 클론 받은 폴더로 이동</span><br>
+                                            cd git-info
+                                        </div>
+                                        <span style="font-size: 0.85em; color: #666; margin-top: 8px; display: block;">※ 터미널에 위 명령어들을 순서대로 입력하고 각각 Enter 키를 누르면 됩니다</span>
+                                    </div>
+                                </div>
+                                <span style="color: #666; font-size: 0.85em; display: block; margin-top: 10px;">※ 이 명령어를 실행하면 프로젝트 폴더가 자동으로 생성됩니다</span>
+                            </li>
+                            <li><strong>생성된 프로젝트 폴더로 이동</strong>
+                                <br><span style="color: #666; font-size: 0.9em;">예: <code>cd repository</code> (저장소 이름과 동일한 폴더명)</span>
+                                <br><span style="color: #666; font-size: 0.85em;">※ 이제 이 폴더에서 작업을 시작할 수 있습니다</span>
+                            </li>
+                        </ol>
+                        <div style="margin-top: 15px; padding: 15px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+                            <strong><i class="fas fa-exclamation-triangle"></i> 중요:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li><strong>zip 파일 다운로드는 필요 없습니다!</strong> <code>git clone</code>만 하면 됩니다.</li>
+                                <li>프로젝트 폴더를 미리 만들 필요 없습니다. <code>git clone</code>이 자동으로 만들어줍니다.</li>
+                                <li>상위 폴더에서 실행해야 합니다. (프로젝트 폴더 안에서 실행하면 안 됩니다)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="info-box" style="margin-bottom: 20px;">
+                        <i class="fas fa-lightbulb"></i> <strong>프로젝트를 선택하면</strong> 아래 코드가 자동으로 적용됩니다.
+                    </div>
+
+                    <div class="code-wrapper">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'pull-init-commands')"><i class="fas fa-copy"></i> 복사</button>
+                        <div class="code-block" id="pull-init-commands">
+<code><span class="code-comment"># 프로젝트를 선택하면 여기 클론 코드가 자동으로 생성됩니다.</span>
+<span class="code-comment"># 예)</span>
+<span class="code-comment"># cd D:\CURSOR</span>
+<span class="code-comment"># git clone https://github.com/username/repository.git</span>
+<span class="code-comment"># cd repository</span></code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 최초 설정 (PUSH용) -->
+                <div class="subsection">
+                    <h3 class="subsection-title"><i class="fas fa-upload"></i> 최초 설정 (PUSH용) - 프로젝트 올리기</h3>
                     <div class="info-box">
-                        <strong><i class="fas fa-exclamation-triangle"></i> 주의:</strong> 아래 명령어들은 프로젝트 최초 설정 시 한 번만 실행하면 됩니다.
+                        <strong><i class="fas fa-exclamation-triangle"></i> 주의:</strong> 아래 명령어들은 <strong>이미 프로젝트 폴더가 있고</strong> GitHub에 처음 올릴 때 사용합니다.
                         <br>특히 <code>git push -u origin main</code> 은 <strong>처음 한 번만</strong> 실행해서 GitHub와 브랜치를 연결해 줍니다.
                         <br><br><i class="fas fa-lightbulb"></i> <strong>프로젝트를 선택하면</strong> 아래 코드가 자동으로 적용됩니다.
-                    </div>
+                        </div>
                     <div class="code-wrapper">
                         <button class="copy-btn" onclick="copyToClipboard(this, 'init-commands')"><i class="fas fa-copy"></i> 복사</button>
                         <div class="code-block" id="init-commands">
@@ -631,31 +744,18 @@
                 </div>
 
                 <div class="subsection">
-                    <h3 class="subsection-title"><i class="fas fa-download"></i> GIT PULL (최신 코드 가져오기)</h3>
+                    <h3 class="subsection-title"><i class="fas fa-sync-alt"></i> 반복 작업 (PULL) - 최신 코드 가져오기</h3>
                     <div class="info-box">
                         <strong><i class="fas fa-info-circle"></i> 개념:</strong>
                         <ul style="margin-top: 10px; margin-left: 20px;">
-                            <li><code>git pull</code> = 원격 저장소(GitHub)에 있는 최신 코드를 내 PC 현재 브랜치로 가져오는 명령</li>
+                            <li><code>git pull</code> = 이미 가져온 프로젝트의 최신 코드만 업데이트 (반복 작업)</li>
                             <li>회사에서 작업 후 <code>git push</code> 했다면, 집에서는 <code>git pull</code> 로 최신 코드 동기화</li>
+                            <li><strong>💡 참고:</strong> 최초 1회는 위의 <strong>"최초 설정 (공통) - 프로젝트 가져오기"</strong> 섹션에서 <code>git clone</code>을 먼저 실행하세요!</li>
                         </ul>
                         <p style="margin-top: 8px;">
                             <i class="fas fa-lightbulb"></i> <strong>프로젝트를 선택하면</strong> 아래 코드가 자동으로 적용됩니다.
                         </p>
-                    </div>
-
-                    <div class="code-wrapper">
-                        <button class="copy-btn" onclick="copyToClipboard(this, 'pull-init-commands')"><i class="fas fa-copy"></i> 복사</button>
-                        <div class="code-block" id="pull-init-commands">
-<code><span class="code-comment"># 프로젝트를 선택하면 여기 클론 코드가 자동으로 생성됩니다.</span>
-<span class="code-comment"># 예)</span>
-<span class="code-comment"># cd D:\CURSOR</span>
-<span class="code-comment"># git clone https://github.com/username/repository.git</span>
-<span class="code-comment"># cd repository</span></code>
                         </div>
-                    </div>
-
-                    <div style="margin-top: 20px;">
-                        <strong><i class="fas fa-sync-alt"></i> 반복 작업 (작업 시작 전 최신 코드 가져오기):</strong>
                         <div class="code-wrapper" style="margin-top: 10px;">
                             <button class="copy-btn" onclick="copyToClipboard(this, 'pull-repeat-commands')"><i class="fas fa-copy"></i> 복사</button>
                             <div class="code-block" id="pull-repeat-commands">
@@ -663,7 +763,6 @@
 <span class="code-comment"># 예)</span>
 <span class="code-comment"># cd D:\CURSOR\git-info</span>
 <span class="code-comment"># git pull</span></code>
-                            </div>
                         </div>
                     </div>
                 </div>
