@@ -422,6 +422,21 @@
                         <div class="path-placeholder">
                             <i class="fas fa-lightbulb"></i> 경로를 입력하면 아래 명령어에 자동으로 적용됩니다.
                         </div>
+                        <hr style="margin: 15px 0; border: none; border-top: 1px dashed #ccc;">
+                        <strong><i class="fas fa-list"></i> 저장된 프로젝트 선택:</strong>
+                        <div class="path-input-wrapper" style="margin-top: 8px;">
+                            <select id="project-select" class="path-input" style="flex: 1; padding: 10px 12px; cursor: pointer;">
+                                <option value="">저장된 프로젝트를 선택하세요</option>
+                            </select>
+                            <button class="copy-btn" onclick="applySelectedProject()" style="position: static; white-space: nowrap;"><i class="fas fa-check"></i> 적용</button>
+                        </div>
+                        <div class="path-input-wrapper" style="margin-top: 8px;">
+                            <button class="copy-btn" onclick="saveCurrentPathAsProject()" style="position: static; white-space: nowrap;"><i class="fas fa-plus"></i> 현재 경로 저장</button>
+                            <button class="copy-btn" onclick="deleteSelectedProject()" style="position: static; white-space: nowrap; background:#dc3545;"><i class="fas fa-trash-alt"></i> 선택 삭제</button>
+                        </div>
+                        <div class="path-placeholder">
+                            <i class="fas fa-lightbulb"></i> 자주 쓰는 프로젝트 경로를 저장해 두고 선택해서 쓸 수 있습니다.
+                        </div>
                     </div>
                     <div class="path-input-section" style="margin-top: 20px;">
                         <strong><i class="fab fa-github"></i> GitHub 저장소 URL 입력:</strong>
@@ -623,7 +638,113 @@
             updateGithubUrl();
         }
         
-        // 페이지 로드 시 로컬 스토리지에서 경로 불러오기 및 이벤트 리스너 설정
+        // 저장된 프로젝트 리스트를 select에 반영
+        function refreshProjectSelect() {
+            const select = document.getElementById('project-select');
+            if (!select) return;
+
+            // 기존 옵션 초기화 (첫 번째 안내 문구는 유지)
+            const firstOption = select.options[0];
+            select.innerHTML = '';
+            select.appendChild(firstOption);
+
+            const raw = localStorage.getItem('projects');
+            if (!raw) return;
+
+            let projects;
+            try {
+                projects = JSON.parse(raw);
+            } catch (e) {
+                console.error('프로젝트 리스트 파싱 실패:', e);
+                return;
+            }
+
+            projects.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.path;
+                opt.textContent = `${p.name} (${p.path})`;
+                select.appendChild(opt);
+            });
+        }
+
+        // 현재 path-input 값을 프로젝트로 저장
+        function saveCurrentPathAsProject() {
+            const pathInput = document.getElementById('project-path');
+            const projectPath = pathInput.value.trim();
+            if (!projectPath) {
+                alert('먼저 상단에 프로젝트 경로를 입력해 주세요.');
+                return;
+            }
+
+            const name = prompt('이 프로젝트의 이름을 입력하세요 (예: git-info, siteplan 등):');
+            if (!name) return;
+
+            let projects = [];
+            const raw = localStorage.getItem('projects');
+            if (raw) {
+                try {
+                    projects = JSON.parse(raw);
+                } catch (e) {
+                    console.error('프로젝트 리스트 파싱 실패:', e);
+                }
+            }
+
+            // 같은 이름이 있으면 덮어쓰기
+            const existingIndex = projects.findIndex(p => p.name === name);
+            if (existingIndex >= 0) {
+                projects[existingIndex].path = projectPath;
+            } else {
+                projects.push({ name, path: projectPath });
+            }
+
+            localStorage.setItem('projects', JSON.stringify(projects));
+            refreshProjectSelect();
+            alert('프로젝트가 저장되었습니다.');
+        }
+
+        // select에서 선택된 프로젝트를 path-input에 적용
+        function applySelectedProject() {
+            const select = document.getElementById('project-select');
+            const value = select.value;
+            if (!value) {
+                alert('먼저 프로젝트를 선택해 주세요.');
+                return;
+            }
+            const pathInput = document.getElementById('project-path');
+            if (!pathInput) return;
+
+            pathInput.value = value;
+            localStorage.setItem('projectPath', value);
+            updateCodePaths();
+        }
+
+        // 선택된 프로젝트 삭제
+        function deleteSelectedProject() {
+            const select = document.getElementById('project-select');
+            const value = select.value;
+            if (!value) {
+                alert('삭제할 프로젝트를 선택해 주세요.');
+                return;
+            }
+
+            const raw = localStorage.getItem('projects');
+            if (!raw) return;
+
+            let projects;
+            try {
+                projects = JSON.parse(raw);
+            } catch (e) {
+                console.error('프로젝트 리스트 파싱 실패:', e);
+                return;
+            }
+
+            const filtered = projects.filter(p => p.path !== value);
+            localStorage.setItem('projects', JSON.stringify(filtered));
+            refreshProjectSelect();
+            alert('선택한 프로젝트가 삭제되었습니다.');
+        }
+
+        // 페이지 로드 시 로컬 스토리지에서 경로/URL/프로젝트 리스트 불러오기 및 이벤트 리스너 설정
         document.addEventListener('DOMContentLoaded', function() {
             const pathInput = document.getElementById('project-path');
             if (pathInput) {
@@ -657,6 +778,9 @@
                     localStorage.setItem('githubUrl', this.value);
                 });
             }
+
+            // 저장된 프로젝트 리스트 드롭다운 초기화
+            refreshProjectSelect();
         });
         
         function copyToClipboard(button, codeBlockId) {
