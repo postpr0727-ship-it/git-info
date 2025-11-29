@@ -902,13 +902,15 @@
         }
 
         // 프로젝트 생성 폼 표시/숨김
-        function showProjectForm() {
+        function showProjectForm(skipReset) {
             document.getElementById('project-form').classList.add('active');
             document.getElementById('project-select-section').classList.remove('active');
-            // 입력 필드 초기화
-            document.getElementById('new-project-name').value = '';
-            document.getElementById('new-project-path').value = '';
-            document.getElementById('new-project-url').value = '';
+            // 입력 필드 초기화 (skipReset이 true면 건너뛰기)
+            if (!skipReset) {
+                document.getElementById('new-project-name').value = '';
+                document.getElementById('new-project-path').value = '';
+                document.getElementById('new-project-url').value = '';
+            }
         }
 
         function hideProjectForm() {
@@ -1017,8 +1019,8 @@
             document.getElementById('new-project-path').value = project.path;
             document.getElementById('new-project-url').value = project.url || '';
 
-            // 생성 폼 표시
-            showProjectForm();
+            // 생성 폼 표시 (초기화 건너뛰기)
+            showProjectForm(true);
 
             // 저장 버튼을 수정 모드로 변경
             const saveBtn = document.querySelector('#project-form .project-btn-primary');
