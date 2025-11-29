@@ -516,7 +516,7 @@
                         <button class="copy-btn" onclick="copyToClipboard(this, 'pull-init-commands')"><i class="fas fa-copy"></i> 복사</button>
                         <div class="code-block" id="pull-init-commands">
 <code><span class="code-comment"># (선택) 작업용 상위 폴더로 이동</span>
-<span class="code-keyword">cd</span> D:\CURSOR
+<span class="code-keyword">cd</span> <span class="parent-path-placeholder-text" data-default="D:\\CURSOR">D:\CURSOR</span>
 
 <span class="code-comment"># GitHub 저장소 클론 (최초 1회)</span>
 <span class="code-keyword">git</span> clone <span class="github-url-placeholder" data-default="https://github.com/postpr0727-ship-it/git-info.git">https://github.com/postpr0727-ship-it/git-info.git</span>
@@ -622,6 +622,30 @@
     </div>
 
     <script>
+        // 경로에서 상위 폴더 경로 추출
+        function getParentPath(path) {
+            if (!path) return '';
+            
+            // Windows 경로 처리 (D:\CURSOR\git-info -> D:\CURSOR)
+            // Linux/Mac 경로 처리 (/home/user/projects/git-info -> /home/user/projects)
+            const normalizedPath = path.replace(/\\/g, '/');
+            const lastSlashIndex = normalizedPath.lastIndexOf('/');
+            
+            if (lastSlashIndex === -1) {
+                // 슬래시가 없으면 원본 경로 반환
+                return path;
+            }
+            
+            const parentPath = normalizedPath.substring(0, lastSlashIndex);
+            
+            // 원본 경로가 백슬래시를 사용했다면 백슬래시로 변환
+            if (path.includes('\\')) {
+                return parentPath.replace(/\//g, '\\');
+            }
+            
+            return parentPath;
+        }
+
         // 프로젝트 경로를 코드 블록에 반영
         function updateCodePaths() {
             const pathInput = document.getElementById('project-path');
@@ -635,11 +659,25 @@
                 pathPlaceholders.forEach(el => {
                     el.textContent = projectPath;
                 });
+                
+                // 상위 폴더 경로도 업데이트
+                const parentPath = getParentPath(projectPath);
+                const parentPlaceholders = document.querySelectorAll('.parent-path-placeholder-text');
+                parentPlaceholders.forEach(el => {
+                    el.textContent = parentPath;
+                });
             } else {
                 // 기본값으로 복원
                 pathPlaceholders.forEach(el => {
                     const defaultPath = el.getAttribute('data-default');
                     el.textContent = defaultPath ? defaultPath.replace(/\\\\/g, '\\') : 'D:\\CURSOR\\siteplan';
+                });
+                
+                // 상위 폴더 경로도 기본값으로 복원
+                const parentPlaceholders = document.querySelectorAll('.parent-path-placeholder-text');
+                parentPlaceholders.forEach(el => {
+                    const defaultPath = el.getAttribute('data-default');
+                    el.textContent = defaultPath ? defaultPath.replace(/\\\\/g, '\\') : 'D:\\CURSOR';
                 });
             }
         }
@@ -787,9 +825,10 @@
                     updateCodePaths();
                 }
                 
-                // 경로 입력 시 로컬 스토리지에만 저장 (코드 적용은 "프로젝트 저장" 클릭 시)
+                // 경로 입력 시 실시간으로 코드 블록에 반영
                 pathInput.addEventListener('input', function() {
                     localStorage.setItem('projectPath', this.value);
+                    updateCodePaths(); // 실시간 업데이트
                 });
             }
             
