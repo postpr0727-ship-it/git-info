@@ -498,6 +498,51 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title"><i class="fas fa-download"></i> GIT PULL (최신 코드 가져오기)</h3>
+                    <div class="info-box">
+                        <strong><i class="fas fa-info-circle"></i> 개념:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li><code>git pull</code> = 원격 저장소(GitHub)에 있는 최신 코드를 내 PC 현재 브랜치로 가져오는 명령</li>
+                            <li>회사에서 작업 후 <code>git push</code> 했다면, 집에서는 <code>git pull</code> 로 최신 코드 동기화</li>
+                        </ul>
+                        <p style="margin-top: 8px;">
+                            <i class="fas fa-lightbulb"></i> 위의 <strong>GitHub 저장소 URL 입력</strong>에 입력한 주소가 아래 클론(최초 1회) 코드에 자동 적용됩니다.
+                        </p>
+                    </div>
+
+                    <div class="code-wrapper">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'pull-init-commands')"><i class="fas fa-copy"></i> 복사</button>
+                        <div class="code-block" id="pull-init-commands">
+<code><span class="code-comment"># (선택) 작업용 상위 폴더로 이동</span>
+<span class="code-keyword">cd</span> D:\CURSOR
+
+<span class="code-comment"># GitHub 저장소 클론 (최초 1회)</span>
+<span class="code-keyword">git</span> clone <span class="github-url-placeholder" data-default="https://github.com/postpr0727-ship-it/git-info.git">https://github.com/postpr0727-ship-it/git-info.git</span>
+
+<span class="code-comment"># 클론 받은 폴더로 이동 (저장소 이름과 동일)</span>
+<span class="code-keyword">cd</span> git-info</code>
+                        </div>
+                    </div>
+
+                    <div class="path-input-section" style="margin-top: 20px;">
+                        <strong><i class="fas fa-sync-alt"></i> 반복 작업 (작업 시작 전 최신 코드 가져오기):</strong>
+                        <div class="path-placeholder">
+                            <i class="fas fa-lightbulb"></i> 아래 경로는 상단의 <strong>프로젝트 디렉토리 경로 입력</strong> 값이 자동으로 적용됩니다.
+                        </div>
+                        <div class="code-wrapper" style="margin-top: 10px;">
+                            <button class="copy-btn" onclick="copyToClipboard(this, 'pull-repeat-commands')"><i class="fas fa-copy"></i> 복사</button>
+                            <div class="code-block" id="pull-repeat-commands">
+<code><span class="code-comment"># 프로젝트 디렉토리로 이동</span>
+<span class="code-keyword">cd</span> <span class="path-placeholder-text" data-default="D:\\CURSOR\\git-info">D:\CURSOR\git-info</span>
+
+<span class="code-comment"># GitHub에서 최신 코드 가져오기</span>
+<span class="code-keyword">git</span> pull</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- 필수 설치 섹션 -->
