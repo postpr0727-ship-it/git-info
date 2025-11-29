@@ -442,6 +442,7 @@
                         <div class="path-placeholder">
                             <i class="fas fa-lightbulb"></i> 이 URL은 <code>git remote add origin ...</code> 명령에 자동 적용됩니다.
                         </div>
+
                         <div class="path-input-wrapper" style="margin-top: 12px;">
                             <button class="copy-btn" onclick="saveCurrentProject()" style="position: static; white-space: nowrap;"><i class="fas fa-save"></i> 프로젝트 저장</button>
                         </div>
@@ -471,14 +472,15 @@
                 </div>
 
                 <div class="subsection">
-                    <h3 class="subsection-title"><i class="fas fa-sync-alt"></i> 반복 작업 (일반적인 업로드)</h3>
+                    <h3 class="subsection-title"><i class="fas fa-sync-alt"></i> 반복 작업 (PUSH)</h3>
                     <div class="path-input-section" style="margin-top: 20px;">
-                        <strong><i class="fas fa-list-ul"></i> 저장된 프로젝트로 반복 작업 코드 생성:</strong>
+                        <strong><i class="fas fa-list-ul"></i> 프로젝트 PUSH 코드 생성:</strong>
                         <div class="path-input-wrapper" style="margin-top: 8px;">
                             <select id="repeat-project-select" class="path-input" style="flex: 1; padding: 10px 12px; cursor: pointer;">
                                 <option value="">프로젝트를 선택하세요</option>
                             </select>
                             <button class="copy-btn" onclick="generateRepeatCommandsFromProject()" style="position: static; white-space: nowrap;"><i class="fas fa-magic"></i> 코드 생성</button>
+                            <button class="copy-btn" onclick="deleteSelectedProject()" style="position: static; white-space: nowrap; background:#dc3545;"><i class="fas fa-trash-alt"></i> 삭제</button>
                         </div>
                         <div class="path-placeholder">
                             <i class="fas fa-lightbulb"></i> 위에서 저장한 프로젝트를 선택하면, 해당 프로젝트 전용 반복 작업 코드가 생성됩니다.
@@ -672,11 +674,12 @@
             select.appendChild(firstOption);
 
             const projects = loadProjects();
+            const folderEmojis = ['📁', '📂', '🗂️', '📘', '📙', '📗', '📒', '📕'];
             projects.forEach((p, idx) => {
                 const opt = document.createElement('option');
                 opt.value = String(idx);
-                const cat = p.category ? `${p.category} / ` : '';
-                opt.textContent = `${cat}${p.name} (${p.path})`;
+                const emoji = folderEmojis[Math.floor(Math.random() * folderEmojis.length)];
+                opt.textContent = `${emoji} ${p.name} (${p.path})`;
                 select.appendChild(opt);
             });
         }
@@ -695,13 +698,13 @@
                 return;
             }
 
-            // 프로젝트명과 폴더 카테고리 입력
+            // 프로젝트명 입력
             const name = prompt('이 프로젝트의 이름을 입력하세요 (예: git-info, siteplan 등):');
             if (!name) {
                 alert('프로젝트 이름이 필요합니다.');
                 return;
             }
-            const category = prompt('폴더 카테고리를 입력하세요 (예: personal, client, demo 등 / 생략 가능):') || '';
+            const category = ''; // 카테고리는 심플하게 사용하지 않음
 
             // 마지막 사용한 프로젝트 정보로 저장
             localStorage.setItem('projectPath', projectPath);
@@ -712,7 +715,7 @@
             // 프로젝트 리스트에 추가/덮어쓰기
             const projects = loadProjects();
             const existingIndex = projects.findIndex(p => p.name === name);
-            const projectData = { name, category, path: projectPath, githubUrl };
+            const projectData = { name, path: projectPath, githubUrl };
             if (existingIndex >= 0) {
                 projects[existingIndex] = projectData;
             } else {
@@ -765,6 +768,45 @@
             refreshRepeatProjectSelect();
         });
 
+        // 반복 작업 영역에서 선택한 프로젝트 삭제
+        function deleteSelectedProject() {
+            const select = document.getElementById('repeat-project-select');
+            const idx = select ? select.value : '';
+            if (!idx) {
+                alert('삭제할 프로젝트를 선택해 주세요.');
+                return;
+            }
+
+            const projects = loadProjects();
+            const indexNum = Number(idx);
+            if (Number.isNaN(indexNum) || !projects[indexNum]) {
+                alert('선택한 프로젝트 정보를 찾을 수 없습니다.');
+                return;
+            }
+
+            if (!confirm(`"${projects[indexNum].name}" 프로젝트를 삭제하시겠습니까?`)) {
+                return;
+            }
+
+            projects.splice(indexNum, 1);
+            saveProjects(projects);
+            refreshRepeatProjectSelect();
+
+            // 안내 코드로 리셋
+            const codeBlock = document.getElementById('project-repeat-commands');
+            if (codeBlock) {
+                codeBlock.innerHTML =
+`<code><span class="code-comment"># 프로젝트를 선택하면 여기 반복 작업 코드가 생성됩니다.</span>
+<span class="code-comment"># 예)</span>
+<span class="code-comment"># cd D:\\CURSOR\\git-info</span>
+<span class="code-comment"># git add .</span>
+<span class="code-comment"># git commit -m "작업 내용 요약"</span>
+<span class="code-comment"># git push</span></code>`;
+            }
+
+            alert('프로젝트가 삭제되었습니다.');
+        }
+
         // 선택한 프로젝트로 반복 작업 코드 생성
         function generateRepeatCommandsFromProject() {
             const select = document.getElementById('repeat-project-select');
@@ -784,9 +826,7 @@
             const codeBlock = document.getElementById('project-repeat-commands');
             if (!codeBlock) return;
 
-            const label = project.category
-                ? `${project.category} - ${project.name}`
-                : project.name;
+            const label = project.name;
 
             const path = escapeHtml(project.path);
 
