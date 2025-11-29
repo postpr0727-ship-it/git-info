@@ -410,35 +410,27 @@
                         </div>
                         <p style="margin-top: 10px;"><i class="fas fa-copy"></i> 출력된 경로를 복사하여 아래 입력창에 붙여넣기</p>
                     </div>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title"><i class="fas fa-cog"></i> 최초 설정 (한 번만 실행)</h3>
+                    <div class="info-box">
+                        <strong><i class="fas fa-exclamation-triangle"></i> 주의:</strong> 아래 명령어들은 프로젝트 최초 설정 시 한 번만 실행하면 됩니다.
+                        <br>특히 <code>git push -u origin main</code> 은 <strong>처음 한 번만</strong> 실행해서 GitHub와 브랜치를 연결해 줍니다.
+                    </div>
                     <div class="path-input-section">
                         <strong><i class="fas fa-folder"></i> 프로젝트 디렉토리 경로 입력:</strong>
                         <div class="path-input-wrapper">
                             <input type="text" 
                                    id="project-path" 
                                    class="path-input" 
-                                   placeholder="예: D:\CURSOR\siteplan">
+                                   placeholder="예: D:\CURSOR\git-info">
                             <button class="copy-btn" onclick="clearPath()" style="position: static; white-space: nowrap;"><i class="fas fa-redo"></i> 초기화</button>
                         </div>
                         <div class="path-placeholder">
-                            <i class="fas fa-lightbulb"></i> 경로를 입력하면 아래 명령어에 자동으로 적용됩니다.
+                            <i class="fas fa-lightbulb"></i> 이 경로는 아래 최초 설정 / 반복 작업 코드의 <code>cd ...</code> 부분에 자동 적용됩니다.
                         </div>
-                        <hr style="margin: 15px 0; border: none; border-top: 1px dashed #ccc;">
-                        <strong><i class="fas fa-list"></i> 저장된 프로젝트 선택:</strong>
-                        <div class="path-input-wrapper" style="margin-top: 8px;">
-                            <select id="project-select" class="path-input" style="flex: 1; padding: 10px 12px; cursor: pointer;">
-                                <option value="">저장된 프로젝트를 선택하세요</option>
-                            </select>
-                            <button class="copy-btn" onclick="applySelectedProject()" style="position: static; white-space: nowrap;"><i class="fas fa-check"></i> 적용</button>
-                        </div>
-                        <div class="path-input-wrapper" style="margin-top: 8px;">
-                            <button class="copy-btn" onclick="saveCurrentPathAsProject()" style="position: static; white-space: nowrap;"><i class="fas fa-plus"></i> 현재 경로 저장</button>
-                            <button class="copy-btn" onclick="deleteSelectedProject()" style="position: static; white-space: nowrap; background:#dc3545;"><i class="fas fa-trash-alt"></i> 선택 삭제</button>
-                        </div>
-                        <div class="path-placeholder">
-                            <i class="fas fa-lightbulb"></i> 자주 쓰는 프로젝트 경로를 저장해 두고 선택해서 쓸 수 있습니다.
-                        </div>
-                    </div>
-                    <div class="path-input-section" style="margin-top: 20px;">
+                        <div style="margin-top: 15px;"></div>
                         <strong><i class="fab fa-github"></i> GitHub 저장소 URL 입력:</strong>
                         <div class="path-input-wrapper">
                             <input type="text" 
@@ -448,16 +440,14 @@
                             <button class="copy-btn" onclick="clearGithubUrl()" style="position: static; white-space: nowrap;"><i class="fas fa-redo"></i> 초기화</button>
                         </div>
                         <div class="path-placeholder">
-                            <i class="fas fa-lightbulb"></i> GitHub 저장소 URL을 입력하면 최초 설정 명령어에 자동으로 적용됩니다.
+                            <i class="fas fa-lightbulb"></i> 이 URL은 <code>git remote add origin ...</code> 명령에 자동 적용됩니다.
                         </div>
-                    </div>
-                </div>
-                
-                <div class="subsection">
-                    <h3 class="subsection-title"><i class="fas fa-cog"></i> 최초 설정 (한 번만 실행)</h3>
-                    <div class="info-box">
-                        <strong><i class="fas fa-exclamation-triangle"></i> 주의:</strong> 아래 명령어들은 프로젝트 최초 설정 시 한 번만 실행하면 됩니다.
-                        <br>특히 <code>git push -u origin main</code> 은 <strong>처음 한 번만</strong> 실행해서 GitHub와 브랜치를 연결해 줍니다.
+                        <div class="path-input-wrapper" style="margin-top: 12px;">
+                            <button class="copy-btn" onclick="saveCurrentProject()" style="position: static; white-space: nowrap;"><i class="fas fa-save"></i> 프로젝트 저장</button>
+                        </div>
+                        <div class="path-placeholder">
+                            <i class="fas fa-lightbulb"></i> "프로젝트 저장"을 누르면 아래 반복 작업 영역에도 동일한 경로가 적용됩니다.
+                        </div>
                     </div>
                     <div class="code-wrapper">
                         <button class="copy-btn" onclick="copyToClipboard(this, 'init-commands')"><i class="fas fa-copy"></i> 복사</button>
@@ -482,20 +472,27 @@
 
                 <div class="subsection">
                     <h3 class="subsection-title"><i class="fas fa-sync-alt"></i> 반복 작업 (일반적인 업로드)</h3>
-                    <div class="code-wrapper">
-                        <button class="copy-btn" onclick="copyToClipboard(this, 'push-commands')"><i class="fas fa-copy"></i> 복사</button>
-                        <div class="code-block" id="push-commands">
-<code><span class="code-comment"># 프로젝트 디렉토리로 이동</span>
-<span class="code-keyword">cd</span> <span class="path-placeholder-text" data-default="D:\\CURSOR\\siteplan">D:\CURSOR\siteplan</span>
-
-<span class="code-comment"># 변경사항 스테이징</span>
-<span class="code-keyword">git</span> add .
-
-<span class="code-comment"># 커밋 (작업 내용을 요약해서 작성)</span>
-<span class="code-keyword">git</span> commit -m <span class="code-string">"작업 내용 요약"</span>
-
-<span class="code-comment"># GitHub에 푸시</span>
-<span class="code-keyword">git</span> push</code>
+                    <div class="path-input-section" style="margin-top: 20px;">
+                        <strong><i class="fas fa-list-ul"></i> 저장된 프로젝트로 반복 작업 코드 생성:</strong>
+                        <div class="path-input-wrapper" style="margin-top: 8px;">
+                            <select id="repeat-project-select" class="path-input" style="flex: 1; padding: 10px 12px; cursor: pointer;">
+                                <option value="">프로젝트를 선택하세요</option>
+                            </select>
+                            <button class="copy-btn" onclick="generateRepeatCommandsFromProject()" style="position: static; white-space: nowrap;"><i class="fas fa-magic"></i> 코드 생성</button>
+                        </div>
+                        <div class="path-placeholder">
+                            <i class="fas fa-lightbulb"></i> 위에서 저장한 프로젝트를 선택하면, 해당 프로젝트 전용 반복 작업 코드가 생성됩니다.
+                        </div>
+                        <div class="code-wrapper" style="margin-top: 10px;">
+                            <button class="copy-btn" onclick="copyToClipboard(this, 'project-repeat-commands')"><i class="fas fa-copy"></i> 복사</button>
+                            <div class="code-block" id="project-repeat-commands">
+<code><span class="code-comment"># 프로젝트를 선택하면 여기 반복 작업 코드가 생성됩니다.</span>
+<span class="code-comment"># 예)</span>
+<span class="code-comment"># cd D:\CURSOR\git-info</span>
+<span class="code-comment"># git add .</span>
+<span class="code-comment"># git commit -m "작업 내용 요약"</span>
+<span class="code-comment"># git push</span></code>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -608,6 +605,16 @@
             updateCodePaths();
         }
         
+        // HTML 이스케이프 유틸
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         // GitHub URL을 코드 블록에 반영
         function updateGithubUrl() {
             const urlInput = document.getElementById('github-url');
@@ -638,110 +645,87 @@
             updateGithubUrl();
         }
         
-        // 저장된 프로젝트 리스트를 select에 반영
-        function refreshProjectSelect() {
-            const select = document.getElementById('project-select');
+        // 저장된 프로젝트 리스트 로드/저장
+        function loadProjects() {
+            const raw = localStorage.getItem('projects');
+            if (!raw) return [];
+            try {
+                const data = JSON.parse(raw);
+                return Array.isArray(data) ? data : [];
+            } catch (e) {
+                console.error('프로젝트 리스트 파싱 실패:', e);
+                return [];
+            }
+        }
+
+        function saveProjects(projects) {
+            localStorage.setItem('projects', JSON.stringify(projects));
+        }
+
+        // 반복 작업용 프로젝트 선택 드롭다운 갱신
+        function refreshRepeatProjectSelect() {
+            const select = document.getElementById('repeat-project-select');
             if (!select) return;
 
-            // 기존 옵션 초기화 (첫 번째 안내 문구는 유지)
             const firstOption = select.options[0];
             select.innerHTML = '';
             select.appendChild(firstOption);
 
-            const raw = localStorage.getItem('projects');
-            if (!raw) return;
-
-            let projects;
-            try {
-                projects = JSON.parse(raw);
-            } catch (e) {
-                console.error('프로젝트 리스트 파싱 실패:', e);
-                return;
-            }
-
-            projects.forEach(p => {
+            const projects = loadProjects();
+            projects.forEach((p, idx) => {
                 const opt = document.createElement('option');
-                opt.value = p.path;
-                opt.textContent = `${p.name} (${p.path})`;
+                opt.value = String(idx);
+                const cat = p.category ? `${p.category} / ` : '';
+                opt.textContent = `${cat}${p.name} (${p.path})`;
                 select.appendChild(opt);
             });
         }
 
-        // 현재 path-input 값을 프로젝트로 저장
-        function saveCurrentPathAsProject() {
+        // 현재 입력된 프로젝트 정보를 저장/적용
+        function saveCurrentProject() {
             const pathInput = document.getElementById('project-path');
-            const projectPath = pathInput.value.trim();
-            if (!projectPath) {
-                alert('먼저 상단에 프로젝트 경로를 입력해 주세요.');
-                return;
-            }
-
-            const name = prompt('이 프로젝트의 이름을 입력하세요 (예: git-info, siteplan 등):');
-            if (!name) return;
-
-            let projects = [];
-            const raw = localStorage.getItem('projects');
-            if (raw) {
-                try {
-                    projects = JSON.parse(raw);
-                } catch (e) {
-                    console.error('프로젝트 리스트 파싱 실패:', e);
-                }
-            }
-
-            // 같은 이름이 있으면 덮어쓰기
-            const existingIndex = projects.findIndex(p => p.name === name);
-            if (existingIndex >= 0) {
-                projects[existingIndex].path = projectPath;
-            } else {
-                projects.push({ name, path: projectPath });
-            }
-
-            localStorage.setItem('projects', JSON.stringify(projects));
-            refreshProjectSelect();
-            alert('프로젝트가 저장되었습니다.');
-        }
-
-        // select에서 선택된 프로젝트를 path-input에 적용
-        function applySelectedProject() {
-            const select = document.getElementById('project-select');
-            const value = select.value;
-            if (!value) {
-                alert('먼저 프로젝트를 선택해 주세요.');
-                return;
-            }
-            const pathInput = document.getElementById('project-path');
+            const urlInput = document.getElementById('github-url');
             if (!pathInput) return;
 
-            pathInput.value = value;
-            localStorage.setItem('projectPath', value);
+            const projectPath = pathInput.value.trim();
+            const githubUrl = urlInput ? urlInput.value.trim() : '';
+
+            if (!projectPath) {
+                alert('먼저 프로젝트 디렉토리 경로를 입력해 주세요.');
+                return;
+            }
+
+            // 프로젝트명과 폴더 카테고리 입력
+            const name = prompt('이 프로젝트의 이름을 입력하세요 (예: git-info, siteplan 등):');
+            if (!name) {
+                alert('프로젝트 이름이 필요합니다.');
+                return;
+            }
+            const category = prompt('폴더 카테고리를 입력하세요 (예: personal, client, demo 등 / 생략 가능):') || '';
+
+            // 마지막 사용한 프로젝트 정보로 저장
+            localStorage.setItem('projectPath', projectPath);
+            if (githubUrl) {
+                localStorage.setItem('githubUrl', githubUrl);
+            }
+
+            // 프로젝트 리스트에 추가/덮어쓰기
+            const projects = loadProjects();
+            const existingIndex = projects.findIndex(p => p.name === name);
+            const projectData = { name, category, path: projectPath, githubUrl };
+            if (existingIndex >= 0) {
+                projects[existingIndex] = projectData;
+            } else {
+                projects.push(projectData);
+            }
+            saveProjects(projects);
+
+            // 코드 블록과 반복 작업용 셀렉트에 즉시 반영
             updateCodePaths();
-        }
+            updateGithubUrl();
+            refreshRepeatProjectSelect();
 
-        // 선택된 프로젝트 삭제
-        function deleteSelectedProject() {
-            const select = document.getElementById('project-select');
-            const value = select.value;
-            if (!value) {
-                alert('삭제할 프로젝트를 선택해 주세요.');
-                return;
-            }
-
-            const raw = localStorage.getItem('projects');
-            if (!raw) return;
-
-            let projects;
-            try {
-                projects = JSON.parse(raw);
-            } catch (e) {
-                console.error('프로젝트 리스트 파싱 실패:', e);
-                return;
-            }
-
-            const filtered = projects.filter(p => p.path !== value);
-            localStorage.setItem('projects', JSON.stringify(filtered));
-            refreshProjectSelect();
-            alert('선택한 프로젝트가 삭제되었습니다.');
+            alert('프로젝트가 저장되었고, 최초 설정 / 반복 작업 코드에 적용되었습니다.');
         }
 
         // 페이지 로드 시 로컬 스토리지에서 경로/URL/프로젝트 리스트 불러오기 및 이벤트 리스너 설정
@@ -755,9 +739,8 @@
                     updateCodePaths();
                 }
                 
-                // 경로 입력 시 코드 업데이트 및 로컬 스토리지에 저장
+                // 경로 입력 시 로컬 스토리지에만 저장 (코드 적용은 "프로젝트 저장" 클릭 시)
                 pathInput.addEventListener('input', function() {
-                    updateCodePaths();
                     localStorage.setItem('projectPath', this.value);
                 });
             }
@@ -772,16 +755,54 @@
                     updateGithubUrl();
                 }
                 
-                // URL 입력 시 코드 업데이트 및 로컬 스토리지에 저장
+                // URL 입력 시 로컬 스토리지에만 저장 (코드 적용은 "프로젝트 저장" 클릭 시)
                 urlInput.addEventListener('input', function() {
-                    updateGithubUrl();
                     localStorage.setItem('githubUrl', this.value);
                 });
             }
 
-            // 저장된 프로젝트 리스트 드롭다운 초기화
-            refreshProjectSelect();
+            // 저장된 프로젝트 리스트를 반복 작업 선택에 반영
+            refreshRepeatProjectSelect();
         });
+
+        // 선택한 프로젝트로 반복 작업 코드 생성
+        function generateRepeatCommandsFromProject() {
+            const select = document.getElementById('repeat-project-select');
+            const idx = select ? select.value : '';
+            if (!idx) {
+                alert('먼저 프로젝트를 선택해 주세요.');
+                return;
+            }
+
+            const projects = loadProjects();
+            const project = projects[Number(idx)];
+            if (!project) {
+                alert('선택한 프로젝트 정보를 찾을 수 없습니다.');
+                return;
+            }
+
+            const codeBlock = document.getElementById('project-repeat-commands');
+            if (!codeBlock) return;
+
+            const label = project.category
+                ? `${project.category} - ${project.name}`
+                : project.name;
+
+            const path = escapeHtml(project.path);
+
+            codeBlock.innerHTML =
+`<code><span class="code-comment"># ${label} 프로젝트 디렉토리로 이동</span>
+<span class="code-keyword">cd</span> ${path}
+
+<span class="code-comment"># 변경사항 스테이징</span>
+<span class="code-keyword">git</span> add .
+
+<span class="code-comment"># 커밋 (작업 내용을 요약해서 작성)</span>
+<span class="code-keyword">git</span> commit -m <span class="code-string">"작업 내용 요약"</span>
+
+<span class="code-comment"># GitHub에 푸시</span>
+<span class="code-keyword">git</span> push</code>`;
+        }
         
         function copyToClipboard(button, codeBlockId) {
             const codeBlock = document.getElementById(codeBlockId);
