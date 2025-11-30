@@ -600,6 +600,9 @@
                         <p style="margin-top: 10px;">
                             GitHub 프로젝트를 처음 가져올 때 사용하는 명령어입니다. <strong>최초 1회만</strong> 실행하면 됩니다.
                         </p>
+                        <p style="margin-top: 10px;">
+                            <strong>💡 중요:</strong> git clone으로 가져온 프로젝트는 이미 GitHub와 연결되어 있으므로, 아래의 "최초 설정 (PUSH용)"은 필요 없습니다. 바로 "반복 작업 (PUSH)"를 사용하세요.
+                        </p>
                     </div>
 
                     <div class="path-input-section" style="margin-bottom: 20px;">
@@ -637,6 +640,13 @@
                     <h3 class="subsection-title"><i class="fas fa-upload"></i> 최초 설정 (PUSH용) - 프로젝트 올리기</h3>
                     <div class="info-box">
                         <strong><i class="fas fa-exclamation-triangle"></i> 주의:</strong> 이미 프로젝트 폴더가 있고 GitHub에 처음 올릴 때 사용합니다. <code>git push -u origin main</code>은 최초 1회만 실행합니다.
+                        <br><br>
+                        <strong>💡 언제 사용하나요?</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>로컬에만 프로젝트가 있고 GitHub에는 없을 때</li>
+                            <li>git clone으로 가져온 프로젝트가 아닐 때</li>
+                            <li>새로 만든 프로젝트를 GitHub에 처음 올릴 때</li>
+                        </ul>
                         </div>
                     <div class="code-wrapper">
                         <button class="copy-btn" onclick="copyToClipboard(this, 'init-commands')"><i class="fas fa-copy"></i> 복사</button>
@@ -670,7 +680,7 @@
                 </div>
 
                 <div class="subsection">
-                    <h3 class="subsection-title"><i class="fas fa-sync-alt"></i> 반복 작업 (PULL) - 최신 코드 가져오기</h3>
+                    <h3 class="subsection-title"><i class="fas fa-sync-alt"></i> 최신 코드 가져오기</h3>
                     <div class="info-box">
                         <strong><i class="fas fa-info-circle"></i> 개념:</strong> 이미 가져온 프로젝트의 최신 코드만 업데이트합니다. 최초 1회는 위의 "최초 설정 (공통)" 섹션에서 <code>git clone</code>을 먼저 실행하세요.
                         </div>
