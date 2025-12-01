@@ -665,6 +665,58 @@
                 </div>
 
                 <div class="subsection">
+                    <h3 class="subsection-title"><i class="fas fa-bolt"></i> 빠른 PUSH/PULL</h3>
+                    <div class="info-box" style="margin-bottom: 15px;">
+                        <strong><i class="fas fa-info-circle"></i> 이미 클론한 프로젝트의 디렉토리 경로만 입력하면 자동으로 PUSH/PULL 명령어가 생성됩니다.</strong>
+                    </div>
+                    
+                    <div class="project-form-group" style="margin-bottom: 20px;">
+                        <label><i class="fas fa-folder"></i> 프로젝트 디렉토리 경로:</label>
+                        <input 
+                            type="text" 
+                            id="quick-path-input" 
+                            class="path-input" 
+                            placeholder="예: D:\CURSOR\git-info 또는 /Users/username/Desktop/cursor/git-info"
+                            oninput="generateQuickCommands()"
+                            style="width: 100%; margin-top: 8px;"
+                        >
+                        <div style="margin-top: 8px; font-size: 0.9em; color: #666;">
+                            <i class="fas fa-lightbulb"></i> 경로를 입력하면 아래에 PUSH/PULL 버튼이 자동으로 나타납니다.
+                        </div>
+                    </div>
+
+                    <!-- 빠른 PUSH 섹션 -->
+                    <div id="quick-push-section" style="display: none; margin-bottom: 30px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">
+                            <i class="fas fa-upload"></i> PUSH 명령어
+                        </h4>
+                        <div class="code-wrapper">
+                            <button class="copy-btn" onclick="copyQuickCommand('quick-push-commands')">
+                                <i class="fas fa-copy"></i> 복사
+                            </button>
+                            <div class="code-block" id="quick-push-commands">
+                                <code><span class="code-comment"># 경로를 입력하면 명령어가 자동으로 생성됩니다.</span></code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 빠른 PULL 섹션 -->
+                    <div id="quick-pull-section" style="display: none; margin-bottom: 30px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">
+                            <i class="fas fa-download"></i> PULL 명령어
+                        </h4>
+                        <div class="code-wrapper">
+                            <button class="copy-btn" onclick="copyQuickCommand('quick-pull-commands')">
+                                <i class="fas fa-copy"></i> 복사
+                            </button>
+                            <div class="code-block" id="quick-pull-commands">
+                                <code><span class="code-comment"># 경로를 입력하면 명령어가 자동으로 생성됩니다.</span></code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
                     <h3 class="subsection-title"><i class="fas fa-sync-alt"></i> 반복 작업 (PUSH)</h3>
                         <div class="code-wrapper" style="margin-top: 10px;">
                             <button class="copy-btn" onclick="copyToClipboard(this, 'project-repeat-commands')"><i class="fas fa-copy"></i> 복사</button>
@@ -1278,6 +1330,102 @@
                 button.innerHTML = originalText;
                 button.classList.remove('copied');
             }, 2000);
+        }
+
+        // 빠른 PUSH/PULL 명령어 생성
+        function generateQuickCommands() {
+            const pathInput = document.getElementById('quick-path-input');
+            const path = pathInput.value.trim();
+            const pushSection = document.getElementById('quick-push-section');
+            const pullSection = document.getElementById('quick-pull-section');
+            const pushCommands = document.getElementById('quick-push-commands');
+            const pullCommands = document.getElementById('quick-pull-commands');
+
+            if (!path) {
+                pushSection.style.display = 'none';
+                pullSection.style.display = 'none';
+                return;
+            }
+
+            const escapedPath = escapeHtml(path);
+
+            // PUSH 명령어 생성
+            pushCommands.innerHTML =
+`<code><span class="code-comment"># 프로젝트 디렉토리로 이동</span>
+<span class="code-keyword">cd</span> ${escapedPath}
+
+<span class="code-comment"># 변경사항 스테이징</span>
+<span class="code-keyword">git</span> add .
+
+<span class="code-comment"># 커밋 생성 (메시지는 변경해주세요)</span>
+<span class="code-keyword">git</span> commit -m <span class="code-string">"작업 내용 요약"</span>
+
+<span class="code-comment"># GitHub에 푸시</span>
+<span class="code-keyword">git</span> push</code>`;
+
+            // PULL 명령어 생성
+            pullCommands.innerHTML =
+`<code><span class="code-comment"># 프로젝트 디렉토리로 이동</span>
+<span class="code-keyword">cd</span> ${escapedPath}
+
+<span class="code-comment"># 원격 저장소에서 최신 코드 가져오기</span>
+<span class="code-keyword">git</span> pull</code>`;
+
+            pushSection.style.display = 'block';
+            pullSection.style.display = 'block';
+        }
+
+        // 빠른 명령어 복사 함수
+        function copyQuickCommand(codeBlockId) {
+            const codeBlock = document.getElementById(codeBlockId);
+            const codeElement = codeBlock.querySelector('code');
+            
+            if (!codeElement) {
+                alert('코드 블록을 찾을 수 없습니다.');
+                return;
+            }
+            
+            // 주석 요소들을 제거한 복사본 생성
+            const clone = codeElement.cloneNode(true);
+            const commentElements = clone.querySelectorAll('.code-comment');
+            
+            // 주석 요소 제거
+            commentElements.forEach(el => {
+                el.remove();
+            });
+            
+            // 텍스트 추출
+            let codeText = clone.innerText || clone.textContent;
+            
+            // 라인별로 분리하여 주석 라인(#으로 시작) 제거
+            const lines = codeText.split('\n');
+            const filteredLines = lines.filter(line => {
+                const trimmedLine = line.trim();
+                return trimmedLine === '' || !trimmedLine.startsWith('#');
+            });
+            
+            codeText = filteredLines.join('\n');
+            
+            // 여러 개의 연속된 빈 줄을 하나로 정리
+            codeText = codeText.replace(/\n{3,}/g, '\n\n');
+            // 앞뒤 공백 제거
+            codeText = codeText.trim();
+            
+            // 버튼 찾기 (code-wrapper 내부의 copy-btn)
+            const codeWrapper = codeBlock.closest('.code-wrapper');
+            const button = codeWrapper ? codeWrapper.querySelector('.copy-btn') : codeBlock.previousElementSibling;
+            
+            // Clipboard API 사용
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(codeText).then(() => {
+                    if (button) showCopySuccess(button);
+                }).catch(err => {
+                    console.error('복사 실패:', err);
+                    if (button) fallbackCopy(codeText, button);
+                });
+            } else {
+                if (button) fallbackCopy(codeText, button);
+            }
         }
     </script>
 </body>
